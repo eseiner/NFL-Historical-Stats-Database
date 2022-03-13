@@ -174,7 +174,6 @@ CREATE TABLE receiving (
                             ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Index on fileset that speeds up our query
 -- Index to make looking up touchdown passes faster, a common stat for passing
 CREATE INDEX idx_nfl_passing ON passing (td_passes);
 -- Index to make looking up a player's former college faster
