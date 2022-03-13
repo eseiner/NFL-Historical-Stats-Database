@@ -175,8 +175,7 @@ CREATE TABLE receiving (
 );
 
 -- Index on fileset that speeds up our query
-CREATE INDEX idx_player_year ON defense (player_id, year);
-CREATE INDEX idx_player_year ON passing (player_id, year);
-CREATE INDEX idx_player_year ON rushing (player_id, year);
-CREATE INDEX idx_player_year ON receiving (player_id, year);
-
+-- Index to make looking up touchdown passes faster, a common stat for passing
+CREATE INDEX idx_nfl_passing ON passing (td_passes);
+-- Index to make looking up a player's former college faster
+CREATE INDEX idx_nfl_college ON player_info (college);
