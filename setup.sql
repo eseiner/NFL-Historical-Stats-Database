@@ -1,3 +1,5 @@
+-- CS 121 Final Project Table Setup
+
 -- Drop tables
 DROP TABLE IF EXISTS receiving;
 DROP TABLE IF EXISTS rushing;
