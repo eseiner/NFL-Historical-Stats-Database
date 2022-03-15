@@ -34,7 +34,7 @@ CREATE TABLE player_info (
     -- The place the player was born
     birth_place   CHAR(50),
     -- The player's birthday
-    birthday      CAR(8),
+    birthday      CHAR(10),
     -- The college the player went to
     college       CHAR(25),
     -- The height of the player in inches
