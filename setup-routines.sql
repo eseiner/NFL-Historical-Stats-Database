@@ -201,8 +201,8 @@ END !
 
 -- Handles rows deleted from the Hall of Fame table, updates stats accordingly
 -- DROP TRIGGER trg_hof_delete;
-CREATE TRIGGER trg_hof_defense AFTER DELETE
-       ON passing FOR EACH ROW
+CREATE TRIGGER trg_hof_defense AFTER INSERT
+       ON defense FOR EACH ROW
 BEGIN
     CALL sp_hof_update(OLD.player_id);
 END !
