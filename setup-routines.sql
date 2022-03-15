@@ -31,8 +31,6 @@ BEGIN
 	DECLARE rec_yds INTEGER;
     DECLARE rec_tds INTEGER;
     
-    
-
     DECLARE hof_eligible BOOL; -- holds if the player is induted into the hall of fame
     SET hof_eligible = 0; -- initially set to false
 
@@ -159,18 +157,18 @@ CREATE VIEW hall_of_fame AS
 DELIMITER !
 
 CREATE PROCEDURE sp_hof_update(
-    new_player_id INT
+    IN hof_eligible INT,
+    IN player VARCHAR(15)
 )
 BEGIN 
     -- Handles adding players to the Hall of Fame
     -- Also updates player information if the player is already in the view
     IF hof_eligible = 1 THEN
         INSERT INTO mv_hall_of_fame
-            VALUES(playr_id, name, position, status, experience, player_rating)
+            VALUES(player_id, name, position, status, experience)
 	    ON DUPLICATE KEY UPDATE
-            status = status,
-            experience = experience,
-            player_rating = player_rating;
+            OLD.status = NEW.status,
+            OLD.experience = NEW.experience;
 	END IF;
     -- Handles removing players from the Hall of Fame
     DELETE FROM mv_hall_of_fame
@@ -181,13 +179,13 @@ END !
 CREATE TRIGGER trg_hof_insert AFTER INSERT
        ON mv_hall_of_fame FOR EACH ROW
 BEGIN
-    CALL sp_hof_update(NEW.player_id, NEW.player_rating);
+    CALL sp_hof_update(NEW.player_id);
 END !
 
 -- Handles rows deleted from the Hall of Fame table, updates stats accordingly
 CREATE TRIGGER trg_hof_delete AFTER DELETE
        ON mv_hall_of_fame FOR EACH ROW
 BEGIN
-    CALL sp_hof_update(OLD.player_id, OLD.player_rating);
+    CALL sp_hof_update(OLD.player_id);
 END !
 DELIMITER ;
