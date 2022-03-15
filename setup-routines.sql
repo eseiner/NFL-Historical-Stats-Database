@@ -194,13 +194,13 @@ BEGIN
     DECLARE experience INTEGER;
     
     SET name = (SELECT name FROM player_info
-               WHERE player_id = id);
+               WHERE player_id = NEW.player_id);
 	SET position = (SELECT position FROM player
-               WHERE player_id = id);
+               WHERE player_id = NEW.player_id);
 	SET status = (SELECT status FROM player
-                    WHERE player_id = id);
+                    WHERE player_id = NEW.player_id);
 	SET experience = (SELECT experience FROM player
-				      WHERE player_id = id);
+				      WHERE player_id = NEW.player_id);
 
     CALL sp_hof_update(NEW.player_id, name, position, status, experience);
 END !
@@ -216,13 +216,13 @@ BEGIN
     DECLARE experience INTEGER;
     
     SET name = (SELECT name FROM player_info
-               WHERE player_id = id);
+               WHERE player_id = NEW.player_id);
 	SET position = (SELECT position FROM player
-               WHERE player_id = id);
+               WHERE player_id = NEW.player_id);
 	SET status = (SELECT status FROM player
-                    WHERE player_id = id);
+                    WHERE player_id = NEW.player_id);
 	SET experience = (SELECT experience FROM player
-				      WHERE player_id = id);
+				      WHERE player_id = NEW.player_id);
 
     CALL sp_hof_update(NEW.player_id, name, position, status, experience);
 END !
