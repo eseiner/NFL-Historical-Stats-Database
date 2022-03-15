@@ -126,7 +126,7 @@ END !
 DELIMITER ;
 
 -- Table for materialized hall of fame information
--- DROP TABLE mv_hall_of_fame;
+DROP TABLE mv_hall_of_fame;
 CREATE TABLE mv_hall_of_fame (
     player_id        INT,
     name             CHAR(30),
@@ -156,28 +156,45 @@ CREATE VIEW hall_of_fame AS
 -- If a player is already in view, its current information is updated.
 DELIMITER !
 
+DROP PROCEDURE sp_hof_update;
 CREATE PROCEDURE sp_hof_update(
-    IN hof_eligible INT,
-    IN player VARCHAR(15)
+    IN id VARCHAR(15)
 )
 BEGIN 
     -- Handles adding players to the Hall of Fame
     -- Also updates player information if the player is already in the view
-    IF hof_eligible = 1 THEN
+    DECLARE name VARCHAR(50);
+    DECLARE position VARCHAR(3);
+    DECLARE status VARCHAR(10);
+    DECLARE experience INTEGER;
+    
+    SET name = (SELECT name FROM player_info
+               WHERE player_info.player_id = id);
+	SET position = (SELECT position FROM player_info
+               WHERE player.player_id = id);
+	SET status = (SELECT status FROM player_info
+                    WHERE player.player_id = id);
+	SET experience = (SELECT experience FROM player_info
+				      WHERE player.player_id = id);
+    
+    IF eligible_for_hof(id) = 1 THEN
         INSERT INTO mv_hall_of_fame
-            VALUES(player_id, name, position, status, experience)
+            VALUES(id, name, position, status, experience)
 	    ON DUPLICATE KEY UPDATE
             OLD.status = NEW.status,
             OLD.experience = NEW.experience;
 	END IF;
     -- Handles removing players from the Hall of Fame
-    DELETE FROM mv_hall_of_fame
-        WHERE player_id = player_id;
+    IF eligible_for_hof(id) = 0 THEN
+      DELETE FROM mv_hall_of_fame
+          WHERE player_id = id;
+	END IF;
 END !
 
 -- Handles new rows added to the Hall of Fame table, updates stats accordingly
+DROP TRIGGER trg_hof_insert;
 CREATE TRIGGER trg_hof_insert AFTER INSERT
-       ON mv_hall_of_fame FOR EACH ROW
+       ON passing FOR EACH ROW
 BEGIN
     CALL sp_hof_update(NEW.player_id);
 END !
