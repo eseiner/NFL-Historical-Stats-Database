@@ -145,7 +145,7 @@ INSERT INTO mv_hall_of_fame (
 );
 
 -- Materialized view of the hall of fame
--- DROP VIEW hall_of_fame;
+DROP VIEW hall_of_fame;
 CREATE VIEW hall_of_fame AS
     SELECT player_id, name, position,
            status, experience
@@ -153,10 +153,9 @@ CREATE VIEW hall_of_fame AS
 
 -- A procedure to execute when updating the hall of fame 
 -- materialized view (eligigble_for_hof).
--- If a player is already in view, its current information is updated.
 DELIMITER !
 
-DROP PROCEDURE sp_hof_update;
+-- DROP PROCEDURE sp_hof_update;
 CREATE PROCEDURE sp_hof_update(
     IN id VARCHAR(15),
     IN name VARCHAR(50),
@@ -166,8 +165,6 @@ CREATE PROCEDURE sp_hof_update(
 )
 BEGIN 
     -- Handles adding players to the Hall of Fame
-    -- Also updates player information if the player is already in the view
-    
     IF eligible_for_hof(id) = 1 THEN
         INSERT INTO mv_hall_of_fame
             VALUES(id, name, position, status, experience);
@@ -183,11 +180,11 @@ BEGIN
 END !
 
 -- Handles new rows added to the Hall of Fame table, updates stats accordingly
-DROP TRIGGER trg_hof_insert;
+-- DROP TRIGGER trg_hof_insert;
 CREATE TRIGGER trg_hof_insert AFTER INSERT
        ON passing FOR EACH ROW
 BEGIN
--- only add to passing table after adding to player and player_info tables.
+-- Only add to passing table after adding to player and player_info tables.
 	DECLARE name VARCHAR(50);
     DECLARE position VARCHAR(3);
     DECLARE status VARCHAR(10);
