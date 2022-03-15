@@ -6,7 +6,7 @@
 -- Will make a player rating and if the rating is above a threshold, then the player
 -- is eligible for the Hall of Fame.
 
--- DROP FUNCTION eligible_for_hof;
+DROP FUNCTION IF EXISTS eligible_for_hof;
 DELIMITER !
 
 CREATE FUNCTION eligible_for_hof (
@@ -16,114 +16,111 @@ BEGIN
     DECLARE defense_rating INTEGER DEFAULT 0; -- defense rating 
 	DECLARE passing_rating INTEGER DEFAULT 0; -- passing rating 
     DECLARE rushing_rating INTEGER DEFAULT 0; -- rushing rating 
-    DECLARE receiving_rating INTEGER DEFAULT 0; -- receiving rating 
+    DECLARE receiving_rating INTEGER DEFAULT 0; -- receiving rating
+    
+    DECLARE tackles INTEGER;
+    DECLARE sacks INTEGER;
+    DECLARE intercepts INTEGER;
+    
+	DECLARE tds INTEGER;
+    DECLARE percent FLOAT;
+    
+	DECLARE rush_yds INTEGER;
+    DECLARE rush_tds INTEGER;
+    
+	DECLARE rec_yds INTEGER;
+    DECLARE rec_tds INTEGER;
+    
+    
 
     DECLARE hof_eligible BOOL; -- holds if the player is induted into the hall of fame
     SET hof_eligible = 0; -- initially set to false
 
     -- Check if individual stats are good enough for the Hall of Fame (defense)
-    SELECT SUM(solo_tackles) + SUM(assist_tackles) AS tot_tackles,
-           SUM(sacks) AS tot_sacks, SUM(safeties) AS tot_safeties,
-           SUM(interceptions) AS tot_interceptions,
-           SUM(interception_yrds) AS tot_interception_yrds
+    SET tackles = (SELECT SUM(solo_tackles) + SUM(assist_tackles) AS tot_tackles
 	FROM defense AS d
-    WHERE d.player_id = player_id;
-    IF tot_tackles > 500 THEN
+    WHERE d.player_id = player_id);
+    
+	SET sacks = (SELECT SUM(sacks) AS tot_sacks
+	FROM defense AS d
+    WHERE d.player_id = player_id);
+    
+	SET intercepts = (SELECT SUM(interceptions) AS tot_interceptions
+	FROM defense AS d
+    WHERE d.player_id = player_id);
+    
+    IF tackles > 500 THEN
         SET defense_rating = defense_rating + 1; 
     END IF;
-    IF tot_sacks > 50 THEN
+    IF sacks > 50 THEN
         SET defense_rating = defense_rating + 1;
 	END IF;
-    IF tot_safeties > 1 THEN
-        SET defense_rating = defense_rating + 1;
-	END IF;
-    IF tot_interceptions > 50 THEN
-        SET defense_rating = defense_rating + 1;
-	END IF;
-    IF tot_incerception_yrds > 200 THEN
+    IF intercepts > 50 THEN
         SET defense_rating = defense_rating + 1;
 	END IF;
 
     -- Check if individual stats are good enough for the Hall of Fame (passing)
-    SELECT SUM(pass_complete) / SUM(pass_attempt) AS pass_percent,
-           SUM(td_passes) AS tot_td_passes, SUM(interceptions) AS tot_interceptions, 
-           SUM(passes_over_twenty) AS tot_over_twenty,
-           SUM(passes_over_forty) AS tot_over_forty
+    SET tds = (SELECT SUM(td_passes) AS tot_td_passes
 	FROM passing AS p
-	WHERE p.player_id = player_id;
-    IF pass_percent > .60 THEN
+	WHERE p.player_id = player_id);
+    
+    SET percent = (SELECT SUM(pass_complete) / SUM(pass_attempt)
+                     AS pass_percent
+	FROM passing AS p
+	WHERE p.player_id = player_id);
+    
+    IF percent > .60 THEN
         SET passing_rating = passing_rating + 1.5;
     END IF;
-    IF tot_td_passes > 200 THEN
+    IF tds > 200 THEN
         SET passing_rating = passing_rating + 1.5;
-	END IF;
-    IF tot_interceptions > 75 THEN
-        SET passing_rating = passing_rating - 0.5;
-	END IF;
-    IF tot_over_twenty > 100 THEN
-        SET passing_rating = passing_rating + 1;
-	END IF;
-    IF tot_over_forty > 50 THEN
-        SET passing_rating = passing_rating + 1;
 	END IF;
 
     -- Check if individual stats are good enough for the Hall of Fame (rushing)
-    SELECT SUM(rush_yards) / SUM(rush_attempt) AS yard_per_rush,
-           SUM(rush_tds) AS tot_rush_tds, SUM(rush_first_down) AS tot_first_down,
-           SUM(rush_over_twenty) AS tot_over_twenty, SUM(rush_fumbles) AS tot_rush_fumbles
+    SET rush_yds = (SELECT SUM(rush_yards) / SUM(rush_attempt) AS yard_per_rush
 	FROM rushing AS ru
-    WHERE ru.player_id = player_id;
-    IF yard_per_rush > 25 THEN
+    WHERE ru.player_id = player_id);
+    
+	SET rush_tds = (SELECT SUM(rush_tds) AS tot_rush_tds
+	FROM rushing AS ru
+    WHERE ru.player_id = player_id);
+	
+    IF rush_tds > 50 THEN
         SET rushing_rating = rushing_rating + 1.5;
-    END IF;
-    IF tot_rush_tds > 50 THEN
+	END IF;
+    IF rush_yds > 6000 THEN
         SET rushing_rating = rushing_rating + 1.5;
-	END IF;
-    IF tot_first_down > 75 THEN
-        SET rushing_rating = rushing_rating + 1;
-	END IF;
-    IF tot_over_twenty > 75 THEN
-        SET rushing_rating = rushing_rating + 1;
-	END IF;
-    IF tot_rush_fumbles > 40 THEN
-        SET rushing_rating = rushing_rating - 0.5;
 	END IF;
 
     -- Check if individual stats are good enough for the Hall of Fame (receiving)
-    SELECT SUM(receiving_yrds) AS tot_receiveing_yrds, SUM(receiving_tds) AS tot_receiving_tds,
-           SUM(reception_first_down) AS tot_reception_first_down,
-           SUM(reception_over_forty) AS tot_over_forty,
-           SUM(receive_fumbles) AS tot_receive_fumbles
+    SET rec_yds = (SELECT SUM(receiving_yrds) AS tot_receiveing_yrds
     FROM receiving AS re
-    WHERE re.player_id = player_id;
-    IF tot_receiving_yrds > 500 THEN
+    WHERE re.player_id = player_id);
+    
+	SET rec_tds = (SELECT SUM(receiving_tds) AS tot_receiving_tds
+    FROM receiving AS re
+    WHERE re.player_id = player_id);
+    
+    
+    IF rec_yrds > 3500 THEN
         SET receiving_rating = receiving_rating + 1.5;
     END IF;
-    IF tot_receiving_tds > 50 THEN
+    IF rec_tds > 50 THEN
         SET receiving_rating = receiving_rating + 1.5;
-    END IF;
-    IF tot_reception_first_down > 100 THEN
-        SET receiving_rating = receiving_rating + 1;
-    END IF;
-    IF tot_over_forty > 50 THEN
-        SET receiving_rating = receiving_rating + 1;
-    END IF;
-    IF tot_receive_fumbles > 50 THEN
-        SET receiving_rating = receiving_rating - 0.5;
     END IF;
     
     -- If the player has a high enough rating, then induct them into the Hall of Fame
     -- (set hof_eligible to 1 or true)
-    IF defense_rating > 4 THEN
+    IF defense_rating >= 1.5 THEN
         SET hof_eligible = 1;
 	END IF;
-	IF passing_rating > 4 THEN
+	IF passing_rating >= 1.5 THEN
 		SET hof_eligible = 1;
 	END IF;
-	IF rushing_rating > 4 THEN
+	IF rushing_rating >= 1.5 THEN
 		SET hof_eligible = 1;
 	END IF;
-    IF receiving_rating > 4 THEN
+    IF receiving_rating >= 1.5 THEN
 		SET hof_eligible = 1;
 	END IF;
 	RETURN hof_eligible;
