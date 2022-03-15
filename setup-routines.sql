@@ -131,13 +131,13 @@ END !
 DELIMITER ;
 
 -- Table for materialized hall of fame information
+-- DROP TABLE mv_hall_of_fame;
 CREATE TABLE mv_hall_of_fame (
     player_id        INT,
     name             CHAR(30),
     position         CHAR(3),
 	status           CHAR(7),
     experience       INT,
-    player_rating    INTEGER,
     PRIMARY KEY (player_id)
 );
 
@@ -150,9 +150,10 @@ INSERT INTO mv_hall_of_fame (
 );
 
 -- Materialized view of the hall of fame
+-- DROP VIEW hall_of_fame;
 CREATE VIEW hall_of_fame AS
     SELECT player_id, name, position,
-           status, experience, player_rating
+           status, experience
     FROM mv_hall_of_fame;
 
 -- A procedure to execute when updating the hall of fame 
