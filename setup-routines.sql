@@ -199,7 +199,7 @@ BEGIN
     CALL sp_hof_update(NEW.player_id);
 END !
 
--- Handles rows deleted from the Hall of Fame table, updates stats accordingly
+-- Handles rows inserted from the Hall of Fame table from the defense table, updates stats accordingly
 DROP TRIGGER IF EXISTS trg_hof_defense;
 CREATE TRIGGER trg_hof_defense AFTER INSERT
        ON defense FOR EACH ROW
