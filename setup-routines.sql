@@ -158,24 +158,15 @@ DELIMITER !
 
 DROP PROCEDURE sp_hof_update;
 CREATE PROCEDURE sp_hof_update(
-    IN id VARCHAR(15)
+    IN id VARCHAR(15),
+    IN name VARCHAR(50),
+    IN position VARCHAR(3),
+    IN status VARCHAR(10),
+    IN experience INTEGER
 )
 BEGIN 
     -- Handles adding players to the Hall of Fame
     -- Also updates player information if the player is already in the view
-    DECLARE name VARCHAR(50);
-    DECLARE position VARCHAR(3);
-    DECLARE status VARCHAR(10);
-    DECLARE experience INTEGER;
-    
-    SET name = (SELECT name FROM player_info
-               WHERE player_id = id);
-	SET position = (SELECT position FROM player
-               WHERE player_id = id);
-	SET status = (SELECT status FROM player
-                    WHERE player_id = id);
-	SET experience = (SELECT experience FROM player
-				      WHERE player_id = id);
     
     IF eligible_for_hof(id) = 1 THEN
         INSERT INTO mv_hall_of_fame
@@ -196,14 +187,43 @@ DROP TRIGGER trg_hof_insert;
 CREATE TRIGGER trg_hof_insert AFTER INSERT
        ON passing FOR EACH ROW
 BEGIN
-    CALL sp_hof_update(NEW.player_id);
+-- only add to passing table after adding to player and player_info tables.
+	DECLARE name VARCHAR(50);
+    DECLARE position VARCHAR(3);
+    DECLARE status VARCHAR(10);
+    DECLARE experience INTEGER;
+    
+    SET name = (SELECT name FROM player_info
+               WHERE player_id = id);
+	SET position = (SELECT position FROM player
+               WHERE player_id = id);
+	SET status = (SELECT status FROM player
+                    WHERE player_id = id);
+	SET experience = (SELECT experience FROM player
+				      WHERE player_id = id);
+
+    CALL sp_hof_update(NEW.player_id, name, position, status, experience);
 END !
 
 -- Handles rows deleted from the Hall of Fame table, updates stats accordingly
--- DROP TRIGGER trg_hof_delete;
+DROP TRIGGER IF EXISTS trg_hof_defense;
 CREATE TRIGGER trg_hof_defense AFTER INSERT
        ON defense FOR EACH ROW
 BEGIN
-    CALL sp_hof_update(OLD.player_id);
+    DECLARE name VARCHAR(50);
+    DECLARE position VARCHAR(3);
+    DECLARE status VARCHAR(10);
+    DECLARE experience INTEGER;
+    
+    SET name = (SELECT name FROM player_info
+               WHERE player_id = id);
+	SET position = (SELECT position FROM player
+               WHERE player_id = id);
+	SET status = (SELECT status FROM player
+                    WHERE player_id = id);
+	SET experience = (SELECT experience FROM player
+				      WHERE player_id = id);
+
+    CALL sp_hof_update(NEW.player_id, name, position, status, experience);
 END !
 DELIMITER ;
