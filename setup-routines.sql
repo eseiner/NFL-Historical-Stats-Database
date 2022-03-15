@@ -145,7 +145,7 @@ INSERT INTO mv_hall_of_fame (
 );
 
 -- Materialized view of the hall of fame
-DROP VIEW hall_of_fame;
+-- DROP VIEW hall_of_fame;
 CREATE VIEW hall_of_fame AS
     SELECT player_id, name, position,
            status, experience
@@ -153,21 +153,33 @@ CREATE VIEW hall_of_fame AS
 
 -- A procedure to execute when updating the hall of fame 
 -- materialized view (eligigble_for_hof).
+-- If a player is already in view, its current information is updated.
 DELIMITER !
 
--- DROP PROCEDURE sp_hof_update;
+DROP PROCEDURE sp_hof_update;
 CREATE PROCEDURE sp_hof_update(
-    IN id VARCHAR(15),
-    IN name VARCHAR(50),
-    IN position VARCHAR(3),
-    IN status VARCHAR(10),
-    IN experience INTEGER
+    IN id VARCHAR(15)
 )
 BEGIN 
     -- Handles adding players to the Hall of Fame
+    -- Also updates player information if the player is already in the view
+	DECLARE new_name VARCHAR(50);
+    DECLARE new_position VARCHAR(3);
+    DECLARE new_status VARCHAR(10);
+    DECLARE new_experience INTEGER;
+    
+    SELECT name INTO new_name FROM player_info
+               WHERE player_info.player_id = id;
+	SELECT position INTO new_position FROM player
+               WHERE player.player_id = id;
+	SELECT status INTO new_status FROM player
+                    WHERE player.player_id = id;
+	SELECT experience INTO new_experience FROM player
+				      WHERE player.player_id = id;
+    
     IF eligible_for_hof(id) = 1 THEN
         INSERT INTO mv_hall_of_fame
-            VALUES(id, name, position, status, experience);
+            VALUES(id, new_name, new_position, new_status, new_experience);
 -- 	    ON DUPLICATE KEY UPDATE
 --             OLD.status = NEW.status,
 --             OLD.experience = NEW.experience;
@@ -180,26 +192,11 @@ BEGIN
 END !
 
 -- Handles new rows added to the Hall of Fame table, updates stats accordingly
--- DROP TRIGGER trg_hof_insert;
+DROP TRIGGER trg_hof_insert;
 CREATE TRIGGER trg_hof_insert AFTER INSERT
        ON passing FOR EACH ROW
 BEGIN
--- Only add to passing table after adding to player and player_info tables.
-	DECLARE name VARCHAR(50);
-    DECLARE position VARCHAR(3);
-    DECLARE status VARCHAR(10);
-    DECLARE experience INTEGER;
-    
-    SET name = (SELECT name FROM player_info
-               WHERE player_id = NEW.player_id);
-	SET position = (SELECT position FROM player
-               WHERE player_id = NEW.player_id);
-	SET status = (SELECT status FROM player
-                    WHERE player_id = NEW.player_id);
-	SET experience = (SELECT experience FROM player
-				      WHERE player_id = NEW.player_id);
-
-    CALL sp_hof_update(NEW.player_id, name, position, status, experience);
+    CALL sp_hof_update(NEW.player_id);
 END !
 
 -- Handles rows deleted from the Hall of Fame table, updates stats accordingly
@@ -207,20 +204,6 @@ DROP TRIGGER IF EXISTS trg_hof_defense;
 CREATE TRIGGER trg_hof_defense AFTER INSERT
        ON defense FOR EACH ROW
 BEGIN
-    DECLARE name VARCHAR(50);
-    DECLARE position VARCHAR(3);
-    DECLARE status VARCHAR(10);
-    DECLARE experience INTEGER;
-    
-    SET name = (SELECT name FROM player_info
-               WHERE player_id = NEW.player_id);
-	SET position = (SELECT position FROM player
-               WHERE player_id = NEW.player_id);
-	SET status = (SELECT status FROM player
-                    WHERE player_id = NEW.player_id);
-	SET experience = (SELECT experience FROM player
-				      WHERE player_id = NEW.player_id);
-
-    CALL sp_hof_update(NEW.player_id, name, position, status, experience);
+    CALL sp_hof_update(NEW.player_id);
 END !
 DELIMITER ;
