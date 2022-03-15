@@ -100,7 +100,7 @@ BEGIN
     WHERE re.player_id = player_id);
     
     
-    IF rec_yrds > 3500 THEN
+    IF rec_yds > 3500 THEN
         SET receiving_rating = receiving_rating + 1.5;
     END IF;
     IF rec_tds > 50 THEN
@@ -169,20 +169,20 @@ BEGIN
     DECLARE experience INTEGER;
     
     SET name = (SELECT name FROM player_info
-               WHERE player_info.player_id = id);
-	SET position = (SELECT position FROM player_info
-               WHERE player.player_id = id);
-	SET status = (SELECT status FROM player_info
-                    WHERE player.player_id = id);
-	SET experience = (SELECT experience FROM player_info
-				      WHERE player.player_id = id);
+               WHERE player_id = id);
+	SET position = (SELECT position FROM player
+               WHERE player_id = id);
+	SET status = (SELECT status FROM player
+                    WHERE player_id = id);
+	SET experience = (SELECT experience FROM player
+				      WHERE player_id = id);
     
     IF eligible_for_hof(id) = 1 THEN
         INSERT INTO mv_hall_of_fame
-            VALUES(id, name, position, status, experience)
-	    ON DUPLICATE KEY UPDATE
-            OLD.status = NEW.status,
-            OLD.experience = NEW.experience;
+            VALUES(id, name, position, status, experience);
+-- 	    ON DUPLICATE KEY UPDATE
+--             OLD.status = NEW.status,
+--             OLD.experience = NEW.experience;
 	END IF;
     -- Handles removing players from the Hall of Fame
     IF eligible_for_hof(id) = 0 THEN
@@ -200,8 +200,9 @@ BEGIN
 END !
 
 -- Handles rows deleted from the Hall of Fame table, updates stats accordingly
-CREATE TRIGGER trg_hof_delete AFTER DELETE
-       ON mv_hall_of_fame FOR EACH ROW
+-- DROP TRIGGER trg_hof_delete;
+CREATE TRIGGER trg_hof_defense AFTER DELETE
+       ON passing FOR EACH ROW
 BEGIN
     CALL sp_hof_update(OLD.player_id);
 END !
