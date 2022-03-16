@@ -14,7 +14,7 @@ import sys
 import mysql.connector
 import mysql.connector.errorcode as errorcode
 
-DEBUG = True
+DEBUG = False
 
 # ----------------------------------------------------------------------
 # SQL Utility Functions
@@ -29,7 +29,7 @@ def get_conn():
           host='localhost',
           user='nflclient',
           port='3306',
-          password='password',
+          password='clientpw',
           database='nfl'
         )
         print('Successfully connected.')
