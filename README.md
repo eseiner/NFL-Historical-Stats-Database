@@ -19,7 +19,7 @@ mysql> source setup-routines.sql;
 
 mysql> source grant-permissions.sql;
 
-mysql> source queries.sql; (for queries)
+mysql> source queries.sql;
 
 mysql> quit;
 
@@ -49,4 +49,3 @@ For client:
 (c) - view teams with most hall of fame players
 
 (q) - quit the python program
-
