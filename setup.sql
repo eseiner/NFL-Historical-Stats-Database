@@ -1,4 +1,7 @@
 -- CS 121 Final Project Table Setup
+CREATE DATABASE nfl;
+USE nfl;
+
 
 -- Drop tables
 DROP TABLE IF EXISTS receiving;
@@ -15,14 +18,13 @@ CREATE TABLE player (
     -- Unique ID for the player
     player_id     INT,
     -- Position of the player
-    position      CHAR(3),
+    position      VARCHAR(3),
     -- If the player is retired or still playing
-    status        CHAR(7),
+    status        VARCHAR(50),
     -- How many years the player has played
     experience    INT,
     -- Player_id is the only primary key
-    PRIMARY KEY (player_id),
-    CHECK (status in ('Active', 'Retired'))
+    PRIMARY KEY (player_id)
 );
 
 -- Background information for all players
@@ -30,13 +32,13 @@ CREATE TABLE player_info (
     -- Unique ID for the player
     player_id     INT,
     -- First and last name of the player
-    name          CHAR(30),
+    name          VARCHAR(30),
     -- The place the player was born
-    birth_place   CHAR(50),
+    birth_place   VARCHAR(50),
     -- The player's birthday
     birthday      CHAR(10),
     -- The college the player went to
-    college       CHAR(25),
+    college       VARCHAR(100),
     -- The height of the player in inches
     height_in     INTEGER,
     -- The weight of the player in pounds
