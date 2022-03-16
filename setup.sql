@@ -20,7 +20,7 @@ CREATE TABLE player (
     -- Position of the player
     position      VARCHAR(3),
     -- If the player is retired or still playing
-    status        VARCHAR(50),
+    status        VARCHAR(75),
     -- How many years the player has played
     experience    INT,
     -- Player_id is the only primary key
