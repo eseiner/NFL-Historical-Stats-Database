@@ -1,14 +1,11 @@
 """
-This is a template you may start with for your Final Project application.
-You may choose to modify it, or you may start with the example function
-stubs (most of which are incomplete). An example is also posted
-from Lecture 19 on Canvas.
-For full credit, remove any irrelevant comments, which are included in the
-template to help you get started. Replace this program overview with a
-brief overview of your application as well (including your name/partners name).
-Some sections are provided as recommended program breakdowns, but are optional
-to keep, and you will probably want to extend them based on your application's
-features.
+Halle Blend and Eli Seiner.
+
+This admin application allows the admin to first log in using an authenticated username and
+password in the database. Once they are logged, in they can add data to the database (in
+this example we only let the admin add to the passsing, player, and player_info tables for
+simplicity. Once the admin is done adding information to the database, they can quit the app by
+pressing q. This allows the users to continually update the database for future use.
 """
 import sys
 import mysql.connector
