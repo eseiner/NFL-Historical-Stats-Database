@@ -50,7 +50,7 @@ def get_conn():
 # ----------------------------------------------------------------------
 def hall_of_fame_names_query():
     """
-
+    Checks the names of the players that are in the hall of fame.
     """
     cursor = conn.cursor()
     sql = """
@@ -71,7 +71,7 @@ FROM mv_hall_of_fame;
 
 def get_hof_by_team():
     """
-
+    Selects the player in the hall of fame by the selected team.
     """
     cursor = conn.cursor()
     sql = """WITH
@@ -108,7 +108,7 @@ FROM (SELECT *
 
 def team_hof_count():
     """
-
+    Counts the number of different teams with players in the hall of fame.
     """
     cursor = conn.cursor()
     sql = """WITH
