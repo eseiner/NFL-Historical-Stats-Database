@@ -15,8 +15,8 @@ FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 ROWS;
 LOAD DATA LOCAL INFILE '/Users/halleblend/Desktop/Caltech/sophmore/term2/cs121/finalproject/csvfiles/passing.csv' INTO TABLE passing
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 ROWS;
 
-LOAD DATA LOCAL INFILE '/Users/halleblend/Desktop/Caltech/sophmore/term2/cs121/finalproject/csvfiles/receiving.csv' INTO TABLE receiving
+LOAD DATA LOCAL INFILE '/Users/halleblend/Desktop/Caltech/sophmore/term2/cs121/finalproject/csvfiles/rushing.csv' INTO TABLE rushing
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 ROWS;
 
-LOAD DATA LOCAL INFILE '/Users/halleblend/Desktop/Caltech/sophmore/term2/cs121/finalproject/csvfiles/rushing.csv' INTO TABLE rushing
+LOAD DATA LOCAL INFILE '/Users/halleblend/Desktop/Caltech/sophmore/term2/cs121/finalproject/csvfiles/receiving.csv' INTO TABLE receiving
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' LINES TERMINATED BY '\n' IGNORE 1 ROWS;
