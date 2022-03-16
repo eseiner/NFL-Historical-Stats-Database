@@ -131,7 +131,7 @@ CREATE TABLE mv_hall_of_fame (
     player_id        INT,
     name             CHAR(30),
     position         CHAR(3),
-	status           CHAR(7),
+	status           VARCHAR(50),
     experience       INT,
     PRIMARY KEY (player_id)
 );
