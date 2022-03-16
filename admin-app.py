@@ -15,7 +15,7 @@ import mysql.connector
 
 import mysql.connector.errorcode as errorcode
 
-DEBUG = True
+DEBUG = False
 logged_in = False
 
 # ----------------------------------------------------------------------
@@ -31,7 +31,7 @@ def get_conn():
           host='localhost',
           user='nfladmin',
           port='3306',
-          password='12345678',
+          password='adminpw',
           database='nfl'
         )
         print('Successfully connected.')
@@ -51,9 +51,6 @@ def get_conn():
 # Functions for Command-Line Options/Query Execution
 # ----------------------------------------------------------------------
 def add_data():
-    """
-    Adds data to the player, player_info, and passing tables.
-    """
     cursor = conn.cursor()
     id = input('Enter player_id: ')
     position = input('Enter player position: ')
@@ -67,7 +64,7 @@ def add_data():
     height = input('Enter player height in inches: ')
     weight = input('Enter player weight: ')
 
-    # only able to add to passing for simplicity
+    #only able to add to passing for simplicity
     year = input('Enter year: ')
     curr_team = input('Enter year: ')
     games_played = input('Enter games played: ')
@@ -105,13 +102,12 @@ def add_data():
             sys.exit(1)
         else:
             sys.stderr('An error occurred.')
-
 # ----------------------------------------------------------------------
 # Functions for Logging Users In
 # ----------------------------------------------------------------------
 def log_in():
     """
-    Prompts the user to log in to the database.
+    Prompts user to log in to the database.
     """
     cursor = conn.cursor()
     username = input('Username: ')
@@ -126,7 +122,6 @@ def log_in():
             sys.exit(1)
         else:
             sys.stderr('An error occurred.')
-
 # ----------------------------------------------------------------------
 # Command-Line Functionality
 # ----------------------------------------------------------------------
@@ -158,7 +153,6 @@ def show_admin_options():
 
 def quit_ui():
     """
-    Quits the app.
     """
     print('Thanks.')
     exit()
