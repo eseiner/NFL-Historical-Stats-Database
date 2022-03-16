@@ -4,12 +4,12 @@ USE nfl;
 
 
 -- Drop tables
-DROP TABLE IF EXISTS receiving;
-DROP TABLE IF EXISTS rushing;
-DROP TABLE IF EXISTS passing;
-DROP TABLE IF EXISTS defense;
-DROP TABLE IF EXISTS player_info;
-DROP TABLE IF EXISTS player;
+-- DROP TABLE IF EXISTS receiving;
+-- DROP TABLE IF EXISTS rushing;
+-- DROP TABLE IF EXISTS passing;
+-- DROP TABLE IF EXISTS defense;
+-- DROP TABLE IF EXISTS player_info;
+-- DROP TABLE IF EXISTS player;
 
 -- NFL Database Table Definitions
 
