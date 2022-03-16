@@ -1,14 +1,16 @@
 """
-This is a template you may start with for your Final Project application.
-You may choose to modify it, or you may start with the example function
-stubs (most of which are incomplete). An example is also posted
-from Lecture 19 on Canvas.
-For full credit, remove any irrelevant comments, which are included in the
-template to help you get started. Replace this program overview with a
-brief overview of your application as well (including your name/partners name).
-Some sections are provided as recommended program breakdowns, but are optional
-to keep, and you will probably want to extend them based on your application's
-features.
+Eli Seiner and Halle Blend.
+
+This client application allows the user to get information about the hall of fame
+like checking all the names that are in the hall of fame, geting the name of the
+player in the hall of fame from the selected team, and counting the number of
+different teams with a player in the hall of fame.
+There is also command line functionality to provide easy use for the user:
+(a) to view all hall of fame players
+(t) to view all hall of fame players and their corresponding teams
+    (includes players who played for multiple teams)
+(c) to view teams with most hall of fame players
+(q) to quit the program
 """
 import sys
 import mysql.connector
