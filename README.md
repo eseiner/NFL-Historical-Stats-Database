@@ -11,7 +11,7 @@ $ mysql --local-infile=1 -u root -p
 
 mysql> source setup.sql;
 
-mysql> source load-data.sql;
+mysql> source load-data.sql; (NOTE that there may be some warnings here, but these deal with loading NULL values into the tables)
 
 mysql> source setup-passwords.sql;
 
